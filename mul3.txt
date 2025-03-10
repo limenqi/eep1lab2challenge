@@ -1,0 +1,3 @@
+MOV R0, #0x0016   // initialise op1 = 22
+MOV R1, #0x0080   // initialise op2 = 128
+MOVC1 R1, R0

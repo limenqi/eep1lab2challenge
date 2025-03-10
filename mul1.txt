@@ -1,0 +1,13 @@
+MOV R3, #0      // initialise sum = 0
+MOV R0, #12     // initialise op1 = 12
+MOV R1, #5      // initialise op2 = 5
+MOV R2, R1      // initialise op2_shifted = op2
+MOV R0, R0      // jump back here and set op1 to shifted op1
+JEQ 8           // if op1 (R0) = 0, then jump to exit while loop; if not, then enter while loop again
+MOV R4, R0      // let r4 = op1
+AND R4, #1      // bitwise AND operation 
+JEQ 2           // if R4&1 = 0, jump to exit if loop
+ADD R3, R2      // sum = sum + op2_shifted
+LSL R2, R2, #1  // left shift op2_shifted by 1
+LSR R0, R0, #1  // right shift op1 by 1
+JMP -8          // jump back to line 5 to enter while loop again

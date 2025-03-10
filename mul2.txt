@@ -1,0 +1,17 @@
+MOV R0, #0x0016   // initialise op1
+MOV R1, #0x0080   // initialise op2
+MOV R4, #0        // initialise bits 15:0 of sum
+MOV R5, #0        // initialise bits 31:16 of sum
+MOV R2, R1        // initialise bits 15:0 of op2_shifted
+MOV R3, #0        // initialise bits 31:16 of op2_shifted
+MOV R0, R0        // jump back here and set op1 to shifted op1
+JEQ 10            // if op1 (R0) = 0, then jump to exit while loop; if not, then enter while loop again
+MOV R6, R0        // let R6 = op1
+AND R6, #1        // bitwise AND operation (if last digit is 0, flagZ = 1; if last digit is 1, flagZ = 0)
+JEQ 3             // if R6&1 = 0, jump to exit if loop
+ADD R4, R2        // add bits 15:0 of op2_shifted and sum to become the new bits 15:0 of sum
+ADC R5, R3        // add bits 31:16 of op2_shifted and sum to become the new bits 31:16 of sum
+ADD R2, R2        // R2 := 2 * R2 -- left shift bits 15:0 of op2shifted by 1
+ADC R3, R3        // R3 := 2 * R3 -- left shift bits 31:16 of op2shifted by 1
+LSR R0, R0, #1    // right shift op1 by 1
+JMP -10           // jump back to line 7 to enter while loop again
