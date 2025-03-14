@@ -1,0 +1,31 @@
+// R1 and R3 are the 16 bits input
+// R4 and R5 are the 32 bits output
+// ___R4___ ___R5___
+//  (31:16)  (15:0)
+
+EXT 0x35
+MOV R1, #123 // R1:= 0x357B
+EXT 0x56
+MOV R3, #109 // R3:= 0x566D
+
+LSR R0, R1, #8 // R0 = 0x35, R1 = 0x7B
+LSR R2, R3, #8 // R2 = 0x56, R3 = 0x6D
+// ___R0(b)___ ___R1(a)___
+// ___R2(d)___ ___R3(c)___
+// note: only the last 8 bits are taken for operations
+
+MOV R6, R1
+MOVC1 R6, R3            // a*c 
+
+MOV R5, R1
+MOVC1 R5, R2            // a*d 
+MOV R7, R0
+MOVC1 R7, R3            // b*c
+ADD R5, R7              // ad+bc
+LSR R4, R5, #8          // add overflow of 2^8 (ad+bc)
+LSL R5, R5, #8          // 2^8 (ad+bc)
+ADD R5, R6              // ac + 2^8 (ad+bc) 
+ADC R4, #0              // add overflow of ac + 2^8 (ad+bc) 
+
+MOVC1 R2, R0            // b*d
+ADD R4, R2              // bit(31:16) of the result
